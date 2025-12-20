@@ -23,7 +23,7 @@ notifications:
 
 github:
   description: "Python Driver for Apache Cassandra®"
-  homepage: https://cassandra.apache.org/
+  homepage: https://docs.datastax.com/en/developer/python-driver/3.29/index.html
   enabled_merge_buttons:
     squash:  false
     merge:   false
@@ -32,5 +32,10 @@ github:
     wiki: false
     issues: false
     projects: false
+    discussions: false
   autolink_jira:
+    - CASSANDRA
     - CASSPYTHON
+  protected_branches:
+    trunk:
+      required_linear_history: true
