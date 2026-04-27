@@ -9,5 +9,4 @@ gevent
 eventlet
 cython>=3.0
 packaging
-futurist
 asynctest
