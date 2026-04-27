@@ -909,7 +909,7 @@ class ExponentialReconnectionPolicyTest(unittest.TestCase):
             if i == 0:
                 self._assert_between(delay, base_delay*0.85, base_delay*1.15)
             elif i < 6:
-                value =  base_delay * (2 ** i)
+                value = base_delay * (2 ** i)
                 self._assert_between(delay, value*85/100, value*1.15)
             else:
                 self._assert_between(delay, max_delay*85/100, max_delay*1.15)
@@ -956,7 +956,7 @@ class ExponentialReconnectionPolicyTest(unittest.TestCase):
         """
         for i in range(100):
             base_delay = float(randint(2, 5))
-            max_delay = (base_delay - 1)  * 100.0
+            max_delay = (base_delay - 1) * 100.0
             ep = ExponentialReconnectionPolicy(base_delay, max_delay, max_attempts=64)
             schedule = ep.new_schedule()
             for i in range(64):
@@ -1467,13 +1467,12 @@ class HostFilterPolicyQueryPlanTest(unittest.TestCase):
         # We don't allow randomness for ordering the replicas in RoundRobin
         hfp._child_policy._child_policy._position = 0
 
-
         mocked_query = Mock()
         query_plan = hfp.make_query_plan("keyspace", mocked_query)
         # First the not filtered replica, and then the rest of the allowed hosts ordered
         query_plan = list(query_plan)
         self.assertEqual(query_plan[0], Host(DefaultEndPoint("127.0.0.2"), SimpleConvictionPolicy))
-        self.assertEqual(set(query_plan[1:]),{Host(DefaultEndPoint("127.0.0.3"), SimpleConvictionPolicy),
+        self.assertEqual(set(query_plan[1:]), {Host(DefaultEndPoint("127.0.0.3"), SimpleConvictionPolicy),
                                               Host(DefaultEndPoint("127.0.0.5"), SimpleConvictionPolicy)})
 
     def test_create_whitelist(self):

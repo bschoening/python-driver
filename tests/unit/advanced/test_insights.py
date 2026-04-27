@@ -18,7 +18,6 @@
 import unittest
 
 import logging
-import sys
 from unittest.mock import sentinel
 
 from cassandra import ConsistencyLevel
@@ -32,7 +31,6 @@ from cassandra.cluster import (
 from cassandra.datastax.graph.query import GraphOptions
 from cassandra.datastax.insights.registry import insights_registry
 from cassandra.datastax.insights.serializers import initialize_registry
-from cassandra.datastax.insights.util import namespace
 from cassandra.policies import (
     RoundRobinPolicy,
     LoadBalancingPolicy,
@@ -63,8 +61,7 @@ class TestGetConfig(unittest.TestCase):
         obj = NoConfAsDict()
 
         ns = 'tests.unit.advanced.test_insights'
-        if sys.version_info > (3,):
-            ns += '.TestGetConfig.test_invalid_object.<locals>'
+        ns += '.TestGetConfig.test_invalid_object.<locals>'
 
         # no default
         # ... as a policy
@@ -101,6 +98,7 @@ class TestGetConfig(unittest.TestCase):
         # with default -- same behavior
         self.assertIs(insights_registry.serialize(SubclassSentinel(), default=object()),
                       sentinel.serialized_superclass)
+
 
 class TestConfigAsDict(unittest.TestCase):
 
@@ -253,8 +251,8 @@ class TestConfigAsDict(unittest.TestCase):
         self.assertEqual(
             insights_registry.serialize(ConstantReconnectionPolicy(3, 200)),
             {'type': 'ConstantReconnectionPolicy',
-            'namespace': 'cassandra.policies',
-            'options': {'delay': 3, 'max_attempts': 200}
+                'namespace': 'cassandra.policies',
+                'options': {'delay': 3, 'max_attempts': 200}
              }
         )
 
@@ -262,8 +260,8 @@ class TestConfigAsDict(unittest.TestCase):
         self.assertEqual(
             insights_registry.serialize(ExponentialReconnectionPolicy(4, 100, 10)),
             {'type': 'ExponentialReconnectionPolicy',
-            'namespace': 'cassandra.policies',
-            'options': {'base_delay': 4, 'max_delay': 100, 'max_attempts': 10}
+                'namespace': 'cassandra.policies',
+                'options': {'base_delay': 4, 'max_delay': 100, 'max_attempts': 10}
              }
         )
 
@@ -271,8 +269,8 @@ class TestConfigAsDict(unittest.TestCase):
         self.assertEqual(
             insights_registry.serialize(RetryPolicy()),
             {'type': 'RetryPolicy',
-            'namespace': 'cassandra.policies',
-            'options': {}
+                'namespace': 'cassandra.policies',
+                'options': {}
              }
         )
 
@@ -280,8 +278,8 @@ class TestConfigAsDict(unittest.TestCase):
         self.assertEqual(
             insights_registry.serialize(SpeculativeExecutionPolicy()),
             {'type': 'SpeculativeExecutionPolicy',
-            'namespace': 'cassandra.policies',
-            'options': {}
+                'namespace': 'cassandra.policies',
+                'options': {}
              }
         )
 

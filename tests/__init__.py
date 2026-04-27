@@ -77,13 +77,6 @@ elif "eventlet" in EVENT_LOOP_MANAGER:
 
     from cassandra.io.eventletreactor import EventletConnection
     connection_class = EventletConnection
-
-    try:
-        from futurist import GreenThreadPoolExecutor
-        thread_pool_executor_class = GreenThreadPoolExecutor
-    except:
-        # futurist is installed only with python >=3.7
-        pass
 elif "asyncore" in EVENT_LOOP_MANAGER:
     from cassandra.io.asyncorereactor import AsyncoreConnection
     connection_class = AsyncoreConnection
