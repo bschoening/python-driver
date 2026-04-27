@@ -30,6 +30,7 @@ log = logging.getLogger(__name__)
 
 NAMEDTUPLE_CREATION_BUG = sys.version_info >= (3,) and sys.version_info < (3, 7)
 
+
 class TestNamedTupleFactory(TestCase):
 
     long_colnames, long_rows = (
