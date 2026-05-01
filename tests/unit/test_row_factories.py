@@ -24,12 +24,7 @@ import sys
 
 from unittest import TestCase
 
-
 log = logging.getLogger(__name__)
-
-
-NAMEDTUPLE_CREATION_BUG = sys.version_info >= (3,) and sys.version_info < (3, 7)
-
 
 class TestNamedTupleFactory(TestCase):
 
@@ -50,37 +45,16 @@ class TestNamedTupleFactory(TestCase):
 
     def test_creation_warning_on_long_column_list(self):
         """
-        Reproduces the failure described in PYTHON-893
-
-        @since 3.15
-        @jira_ticket PYTHON-893
-        @expected_result creation fails on Python > 3 and < 3.7
-
-        @test_category row_factory
+        Test for a regression in PYTHON-893.  Shouldn't be an issue with currently
+        supported versions since the underlying issue was fixed in Python 3.7
         """
-        if not NAMEDTUPLE_CREATION_BUG:
-            named_tuple_factory(self.long_colnames, self.long_rows)
-            return
-
-        with warnings.catch_warnings(record=True) as w:
-            rows = named_tuple_factory(self.long_colnames, self.long_rows)
-        self.assertEqual(len(w), 1)
-        warning = w[0]
-        self.assertIn('pseudo_namedtuple_factory', str(warning))
-        self.assertIn('3.7', str(warning))
-
-        for r in rows:
-            self.assertEqual(r.col0, self.long_rows[0][0])
+        named_tuple_factory(self.long_colnames, self.long_rows)
 
     def test_creation_no_warning_on_short_column_list(self):
         """
-        Tests that normal namedtuple row creation still works after PYTHON-893 fix
-
-        @since 3.15
-        @jira_ticket PYTHON-893
-        @expected_result creates namedtuple-based Rows
-
-        @test_category row_factory
+        Tests that normal namedtuple row creation still works after PYTHON-893 fix.
+        Shouldn't be an issue with currently supported versions since the underlying
+        issue was fixed in Python 3.7
         """
         with warnings.catch_warnings(record=True) as w:
             rows = named_tuple_factory(self.short_colnames, self.short_rows)
