@@ -37,7 +37,7 @@ EVENT_LOOP_MANAGER = os.getenv('EVENT_LOOP_MANAGER', "libev")
 cython_env = os.getenv('VERIFY_CYTHON', "False")
 
 VERIFY_CYTHON = False
-if(cython_env == 'True'):
+if (cython_env == 'True'):
     VERIFY_CYTHON = True
 
 thread_pool_executor_class = ThreadPoolExecutor

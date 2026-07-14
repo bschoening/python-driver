@@ -93,21 +93,24 @@ try:
 except ImportError:
     from cassandra.util import WeakSet  # NOQA
 
+
 def _try_libev_import():
     try:
         from cassandra.io.libevreactor import LibevConnection
-        return (LibevConnection,None)
+        return (LibevConnection, None)
     except DependencyException as e:
         return (None, e)
+
 
 def _try_asyncore_import():
     try:
         from cassandra.io.asyncorereactor import AsyncoreConnection
-        return (AsyncoreConnection,None)
+        return (AsyncoreConnection, None)
     except DependencyException as e:
         return (None, e)
 
-def _connection_reduce_fn(val,import_fn):
+
+def _connection_reduce_fn(val, import_fn):
     (rv, excs) = val
     # If we've already found a workable Connection class return immediately
     if rv:
@@ -117,10 +120,11 @@ def _connection_reduce_fn(val,import_fn):
         excs.append(exc)
     return (rv or import_result, excs)
 
+
 log = logging.getLogger(__name__)
 
 conn_fns = (_try_libev_import, _try_asyncore_import)
-(conn_class, excs) = reduce(_connection_reduce_fn, conn_fns, (None,[]))
+(conn_class, excs) = reduce(_connection_reduce_fn, conn_fns, (None, []))
 if not conn_class:
     raise DependencyException("Unable to load a default connection class", excs)
 DefaultConnection = conn_class
@@ -378,8 +382,8 @@ class ExecutionProfile(object):
 
         self.retry_policy = retry_policy or RetryPolicy()
 
-        if (serial_consistency_level is not None and
-                not ConsistencyLevel.is_serial(serial_consistency_level)):
+        if (serial_consistency_level is not None
+                and not ConsistencyLevel.is_serial(serial_consistency_level)):
             raise ValueError("serial_consistency_level must be either "
                              "ConsistencyLevel.SERIAL "
                              "or ConsistencyLevel.LOCAL_SERIAL.")
@@ -670,6 +674,7 @@ class Cluster(object):
         self._auth_provider = value
 
     _load_balancing_policy = None
+
     @property
     def load_balancing_policy(self):
         """
@@ -706,6 +711,7 @@ class Cluster(object):
     """
 
     _default_retry_policy = RetryPolicy()
+
     @property
     def default_retry_policy(self):
         """
@@ -763,9 +769,8 @@ class Cluster(object):
     Using ssl_options without ssl_context is deprecated and will be removed in the
     next major release.
 
-    An optional dict which will be used as kwargs for ``ssl.SSLContext.wrap_socket`` 
-    when new sockets are created. This should be used when client encryption is enabled 
-    in Cassandra.
+    An optional dict which will be used as kwargs for ``ssl.SSLContext.wrap_socket`` when new
+    sockets are created. This should be used when client encryption is enabled in Cassandra.
 
     The following documentation only applies when ssl_options is used without ssl_context.
 
@@ -2240,6 +2245,7 @@ class Session(object):
     _monitor_reporter = None
 
     _row_factory = staticmethod(named_tuple_factory)
+
     @property
     def row_factory(self):
         """
@@ -2305,8 +2311,8 @@ class Session(object):
         *Deprecated:* use execution profiles instead
         """
         warn("Setting the consistency level at the session level will be removed in 4.0. Consider using "
-             "execution profiles and setting the desired consistency level to the EXEC_PROFILE_DEFAULT profile."
-             , DeprecationWarning)
+             "execution profiles and setting the desired consistency level to the EXEC_PROFILE_DEFAULT profile.",
+             DeprecationWarning)
         self._validate_set_legacy_config('default_consistency_level', cl)
 
     _default_serial_consistency_level = None
@@ -2324,8 +2330,8 @@ class Session(object):
 
     @default_serial_consistency_level.setter
     def default_serial_consistency_level(self, cl):
-        if (cl is not None and
-                not ConsistencyLevel.is_serial(cl)):
+        if (cl is not None
+                and not ConsistencyLevel.is_serial(cl)):
             raise ValueError("default_serial_consistency_level must be either "
                              "ConsistencyLevel.SERIAL "
                              "or ConsistencyLevel.LOCAL_SERIAL.")
@@ -3096,7 +3102,7 @@ class Session(object):
         for host in tuple(self._pools.keys()):
             if host != excluded_host and host.is_up:
                 future = ResponseFuture(self, PrepareMessage(query=query, keyspace=keyspace),
-                                            None, self.default_timeout)
+                                        None, self.default_timeout)
 
                 # we don't care about errors preparing against specific hosts,
                 # since we can always prepare them as needed when the prepared
@@ -3133,7 +3139,7 @@ class Session(object):
                 self.is_shutdown = True
 
         # PYTHON-673. If shutdown was called shortly after session init, avoid
-        # a race by cancelling any initial connection attempts haven't started,
+        # a race by cancelling any initial connection attempts which haven't started,
         # then blocking on any that have.
         for future in self._initial_connect_futures:
             future.cancel()
@@ -3233,8 +3239,7 @@ class Session(object):
         but also on other nodes (for instance, if a node dies, another
         previously ignored node may be now considered).
 
-        This method ensures that all hosts for which a pool should exist
-        have one, and hosts that shouldn't don't.
+        Ensures host pools exist only for eligible hosts.
 
         For internal use only.
         """
@@ -3842,9 +3847,9 @@ class ControlConnection(object):
 
     @staticmethod
     def _is_valid_peer(row):
-        return bool(_NodeInfo.get_broadcast_rpc_address(row) and row.get("host_id") and
-                    row.get("data_center") and row.get("rack") and
-                    ('tokens' not in row or row.get('tokens')))
+        return bool(_NodeInfo.get_broadcast_rpc_address(row) and row.get("host_id")
+                    and row.get("data_center") and row.get("rack")
+                    and ('tokens' not in row or row.get('tokens')))
 
     def _update_location_info(self, host, datacenter, rack):
         if host.datacenter == datacenter and host.rack == rack:
@@ -4652,7 +4657,7 @@ class ResponseFuture(object):
                     current_keyspace = self._connection.keyspace
                     prepared_keyspace = prepared_statement.keyspace
                     if not ProtocolVersion.uses_keyspace_flag(self.session.cluster.protocol_version) \
-                            and prepared_keyspace  and current_keyspace != prepared_keyspace:
+                            and prepared_keyspace and current_keyspace != prepared_keyspace:
                         self._set_final_exception(
                             ValueError("The Session's current keyspace (%s) does "
                                        "not match the keyspace the statement was "
