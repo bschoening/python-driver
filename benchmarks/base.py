@@ -20,7 +20,7 @@ import os.path
 import sys
 from threading import Thread
 import time
-from optparse import OptionParser
+from argparse import ArgumentParser
 import uuid
 
 from greplin import scales
@@ -207,39 +207,39 @@ def benchmark(thread_class):
 
 
 def parse_options():
-    parser = OptionParser()
-    parser.add_option('-H', '--hosts', default='127.0.0.1',
-                      help='cassandra hosts to connect to (comma-separated list) [default: %default]')
-    parser.add_option('-t', '--threads', type='int', default=1,
-                      help='number of threads [default: %default]')
-    parser.add_option('-n', '--num-ops', type='int', default=10000,
-                      help='number of operations [default: %default]')
-    parser.add_option('--asyncore-only', action='store_true', dest='asyncore_only',
-                      help='only benchmark with asyncore connections')
-    parser.add_option('--asyncio-only', action='store_true', dest='asyncio_only',
-                      help='only benchmark with asyncio connections')
-    parser.add_option('--libev-only', action='store_true', dest='libev_only',
-                      help='only benchmark with libev connections')
-    parser.add_option('-m', '--metrics', action='store_true', dest='enable_metrics',
-                      help='enable and print metrics for operations')
-    parser.add_option('-l', '--log-level', default='info',
-                      help='logging level: debug, info, warning, or error')
-    parser.add_option('-p', '--profile', action='store_true', dest='profile',
-                      help='Profile the run')
-    parser.add_option('--protocol-version', type='int', dest='protocol_version', default=4,
-                      help='Native protocol version to use')
-    parser.add_option('-c', '--num-columns', type='int', dest='num_columns', default=2,
-                      help='Specify the number of columns for the schema')
-    parser.add_option('-k', '--keyspace', type='str', dest='keyspace', default=KEYSPACE,
-                      help='Specify the keyspace name for the schema')
-    parser.add_option('--keep-data', action='store_true', dest='keep_data', default=False,
-                      help='Keep the data after the benchmark')
-    parser.add_option('--column-type', type='str', dest='column_type', default='text',
-                      help='Specify the column type for the schema (supported: int, text, float, uuid, timestamp)')
-    parser.add_option('--read', action='store_true', dest='read', default=False,
-                      help='Read mode')
+    parser = ArgumentParser()
+    parser.add_argument('-H', '--hosts', default='127.0.0.1',
+                        help='cassandra hosts to connect to (comma-separated list) [default: %(default)s]')
+    parser.add_argument('-t', '--threads', type=int, default=1,
+                        help='number of threads [default: %(default)s]')
+    parser.add_argument('-n', '--num-ops', type=int, default=10000,
+                        help='number of operations [default: %(default)s]')
+    parser.add_argument('--asyncore-only', action='store_true', dest='asyncore_only',
+                        help='only benchmark with asyncore connections')
+    parser.add_argument('--asyncio-only', action='store_true', dest='asyncio_only',
+                        help='only benchmark with asyncio connections')
+    parser.add_argument('--libev-only', action='store_true', dest='libev_only',
+                        help='only benchmark with libev connections')
+    parser.add_argument('-m', '--metrics', action='store_true', dest='enable_metrics',
+                        help='enable and print metrics for operations')
+    parser.add_argument('-l', '--log-level', default='info',
+                        help='logging level: debug, info, warning, or error')
+    parser.add_argument('-p', '--profile', action='store_true', dest='profile',
+                        help='Profile the run')
+    parser.add_argument('--protocol-version', type=int, dest='protocol_version', default=4,
+                        help='Native protocol version to use')
+    parser.add_argument('-c', '--num-columns', type=int, dest='num_columns', default=2,
+                        help='Specify the number of columns for the schema')
+    parser.add_argument('-k', '--keyspace', type=str, dest='keyspace', default=KEYSPACE,
+                        help='Specify the keyspace name for the schema')
+    parser.add_argument('--keep-data', action='store_true', dest='keep_data', default=False,
+                        help='Keep the data after the benchmark')
+    parser.add_argument('--column-type', type=str, dest='column_type', default='text',
+                        help='Specify the column type for the schema (supported: int, text, float, uuid, timestamp)')
+    parser.add_argument('--read', action='store_true', dest='read', default=False,
+                        help='Read mode')
 
-    options, args = parser.parse_args()
+    options, args = parser.parse_known_args()
 
     options.hosts = options.hosts.split(',')
 
